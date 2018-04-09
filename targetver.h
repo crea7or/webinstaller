@@ -1,0 +1,17 @@
+// Copyright 2018 CEZEO software Ltd. ( http://www.cezeo.com ). All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be found in the LICENSE file.
+
+#pragma once
+
+// Including SDKDDKVer.h defines the highest available Windows platform.
+// If you wish to build your application for a previous Windows platform, include WinSDKVer.h and
+// set the _WIN32_WINNT macro to the platform you wish to support before including SDKDDKVer.h.
+
+#ifdef _WIN32_WINNT
+#undef _WIN32_WINNT
+#endif
+
+#include <WinSDKVer.h>
+#define _WIN32_WINNT _WIN32_WINNT_WINXP
+#include <SDKDDKVer.h>
+

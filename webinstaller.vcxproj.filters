@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{ef4fad86-86cd-4ec6-89ed-b5f105611f39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{88ee4000-20d7-4d27-876b-410500e52ca6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Installer">
+      <UniqueIdentifier>{f900696b-4e93-462d-a3cc-21a1dc2cce67}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="windows\abstract_dialog.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="windows\windows_utils.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="windows\main_dialog.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="windows\base_dialog.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\base_control.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\static_control.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\link_control.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\progress_control.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\composite_checkbox_control.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\composite_link_control.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\layered_static_control.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\rect_button_control.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Installer</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Installer</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\option_checkbox_control.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="installer\install.h">
+      <Filter>Installer</Filter>
+    </ClInclude>
+    <ClInclude Include="installer\installer_constants.h">
+      <Filter>Installer</Filter>
+    </ClInclude>
+    <ClInclude Include="installer\installer_manager.h">
+      <Filter>Installer</Filter>
+    </ClInclude>
+    <ClInclude Include="installer\system_utils.h">
+      <Filter>Installer</Filter>
+    </ClInclude>
+    <ClInclude Include="installer\resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="windows\windows_utils.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="windows\main_dialog.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="windows\base_dialog.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\base_control.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\static_control.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\link_control.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\progress_control.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\composite_link_control.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\composite_checkbox_control.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\layered_static_control.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\rect_button_control.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Installer</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\option_checkbox_control.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="installer\install.cpp">
+      <Filter>Installer</Filter>
+    </ClCompile>
+    <ClCompile Include="installer\installer_manager.cpp">
+      <Filter>Installer</Filter>
+    </ClCompile>
+    <ClCompile Include="installer\system_utils.cpp">
+      <Filter>Installer</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="installer\install.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="installer\resources\install.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="installer\resources\webinstaller.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="installer\resources\webinstaller.ttf">
+      <Filter>Resource Files</Filter>
+    </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="installer\install.manifest">
+      <Filter>Resource Files</Filter>
+    </Manifest>
+  </ItemGroup>
+</Project>
