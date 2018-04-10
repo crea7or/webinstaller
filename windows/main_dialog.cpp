@@ -59,7 +59,7 @@ LRESULT MainDialog::OnInitDialog( HWND initDialogHandle )
 
   // main windows eula and policy
   mainLicense.SetForegroundColor( Installer::mainTextColor );
-  mainLicense.AddPiece( L"By clicking Install button you're acñept our " );
+  mainLicense.AddPiece( L"By clicking Install button you will be accepting our " );
   mainLicense.AddPiece( L"end-user license", EULA_CLICK );
   mainLicense.AddPiece( L" and " );
   mainLicense.AddPiece( L"privacy policy", POLICY_CLICK );
