@@ -201,7 +201,7 @@ public:
 
     if ( dialog != NULL )
     {
-      if ( message > WM_USER )
+      if ( message >= WM_USER )
       {
         result = dialog->OnUserMessage( message, wParam, lParam );
       }
@@ -215,7 +215,6 @@ public:
             result = dialog->OnMouse( message, wParam, lParam );
             break;
 
-          case WM_CTLCOLOR:
           case WM_CTLCOLORBTN:
           case WM_CTLCOLORSTATIC:
             result = dialog->OnCtrlColor( message, wParam, lParam );
