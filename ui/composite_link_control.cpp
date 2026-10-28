@@ -88,16 +88,17 @@ LRESULT CompositeLinkControl::OnPaint()
     // aligning options
     // multiline text is not supported yet
     DWORD outerStyle = DT_EDITCONTROL | DT_SINGLELINE | DT_VCENTER;
-    DWORD controlStyle = GetWindowLong( windowHandle, GWL_STYLE );
+    // static type is an enumeration, not bit flags
+    DWORD controlType = GetWindowLong( windowHandle, GWL_STYLE ) & SS_TYPEMASK;
     if ( totalWidth < windowWidth )
     {
       drawRectangleOffset = 0;
-      if (( controlStyle & SS_CENTER ) == SS_CENTER )
+      if ( controlType == SS_CENTER )
       {
         // place at the center position
         drawRectangleOffset = ( windowWidth - totalWidth ) >> 1;
       }
-      else if ( controlStyle & SS_RIGHT )
+      else if ( controlType == SS_RIGHT )
       {
         // place at the most right position
         drawRectangleOffset += windowWidth - totalWidth;

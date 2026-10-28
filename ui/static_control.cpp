@@ -55,14 +55,15 @@ void StaticControl::SetText( const std::wstring& text )
 DWORD StaticControl::GetControlStyles( const DWORD initialStyle ) const
 {
   DWORD style = initialStyle;
-  DWORD controlStyle = GetWindowLong( windowHandle, GWL_STYLE );
-  if (( controlStyle & SS_CENTER ) == SS_CENTER )
+  // static type is an enumeration, not bit flags
+  DWORD controlType = GetWindowLong( windowHandle, GWL_STYLE ) & SS_TYPEMASK;
+  if ( controlType == SS_CENTER )
   {
     style |= DT_CENTER;
   }
   else
   {
-    style |= ( controlStyle & SS_RIGHT ) == SS_RIGHT ? DT_RIGHT : DT_LEFT;
+    style |= controlType == SS_RIGHT ? DT_RIGHT : DT_LEFT;
   }
   return style;
 }
