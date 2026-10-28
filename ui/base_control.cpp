@@ -10,6 +10,7 @@
 BaseControl::BaseControl()
 {
   foregroundColor = GetSysColor( COLOR_WINDOWTEXT );
+  disabledForegroundColor = GetSysColor( COLOR_GRAYTEXT );
   backgroundColor = GetSysColor( COLOR_WINDOW );
   windowBackgroundBrush = CreateSolidBrush( backgroundColor );
   prevoiusWndProc = NULL;
