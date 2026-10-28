@@ -163,27 +163,25 @@ namespace WindowsUtils
 
   UINT GetWindowDpi( HWND window )
   {
-    DWORD version = GetVersion();
-    UINT dpi = 0;
-    DWORD majorVersion = ( DWORD ) ( LOBYTE( LOWORD( version )));
-    DWORD minorVersion = ( DWORD ) ( HIBYTE( LOWORD( version )));
-
-    if ( majorVersion >= 10 )
+    // Windows 10 and newer, returns 0 if not available
+    UINT dpi = SystemUtils::GetDpiForWindowUser32( window );
+    if ( dpi == 0 )
     {
-      // Windows 10 and newer
-      dpi = SystemUtils::GetDpiForWindowUser32( window );
-    }
-    else if ( majorVersion == 6 && minorVersion >= 3 )
-    {
-      // Windows 8.1
+      // Windows 8.1, returns 0 if not available
       dpi = SystemUtils::GetDpiForMonitorShcore( window );
     }
     if ( dpi == 0 )
     {
       // handle systems before Windows 10/8.1
-      HDC desktopDC = GetDC( NULL );
-      dpi = ( UINT ) GetDeviceCaps( desktopDC, LOGPIXELSY );
-      ReleaseDC( NULL, desktopDC );
+      // system DPI does not change during process lifetime
+      static UINT systemDpi = []()
+      {
+        HDC desktopDC = GetDC( NULL );
+        UINT result = ( UINT ) GetDeviceCaps( desktopDC, LOGPIXELSY );
+        ReleaseDC( NULL, desktopDC );
+        return result;
+      }();
+      dpi = systemDpi;
     }
     return dpi;
   }

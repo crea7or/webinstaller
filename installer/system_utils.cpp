@@ -29,19 +29,19 @@ namespace SystemUtils
     if ( currentMonitor != NULL )
     {
       typedef HRESULT( WINAPI *LPFN_GETDPIFORMONITOR )( HMONITOR, MONITOR_DPI_TYPE, UINT*, UINT* );
-      HMODULE shcodeDll = LoadLibrary( L"shcore.dll" );
-      if ( shcodeDll != NULL )
+      // resolved once, shcore.dll stays loaded for the process lifetime
+      static LPFN_GETDPIFORMONITOR fnGetDpiForMonitor = []() -> LPFN_GETDPIFORMONITOR
+      {
+        HMODULE shcodeDll = LoadLibrary( L"shcore.dll" );
+        return shcodeDll != NULL ? ( LPFN_GETDPIFORMONITOR ) GetProcAddress( shcodeDll, "GetDpiForMonitor" ) : NULL;
+      }();
+      if ( fnGetDpiForMonitor != NULL )
       {
         UINT dpiX = 0, dpiY = 0;
-        LPFN_GETDPIFORMONITOR fnGetDpiForMonitor = ( LPFN_GETDPIFORMONITOR ) GetProcAddress( shcodeDll, "GetDpiForMonitor" );
-        if ( fnGetDpiForMonitor != NULL )
+        if ( fnGetDpiForMonitor( currentMonitor, MDT_EFFECTIVE_DPI, &dpiX, &dpiY ) == S_OK )
         {
-          if ( fnGetDpiForMonitor( currentMonitor, MDT_EFFECTIVE_DPI, &dpiX, &dpiY ) == S_OK )
-          {
-            result = dpiX;
-          }
+          result = dpiX;
         }
-        FreeLibrary( shcodeDll );
       }
     }
     return result;
@@ -51,7 +51,8 @@ namespace SystemUtils
   {
     UINT result = 0;
     typedef UINT( WINAPI *LPFN_GETDPIFORWINDOW )( HWND );
-    LPFN_GETDPIFORWINDOW fnGetDpiForWindow = (LPFN_GETDPIFORWINDOW) GetProcAddress( GetModuleHandle( L"user32" ), "GetDpiForWindow" );
+    // resolved once
+    static LPFN_GETDPIFORWINDOW fnGetDpiForWindow = (LPFN_GETDPIFORWINDOW) GetProcAddress( GetModuleHandle( L"user32" ), "GetDpiForWindow" );
     if ( fnGetDpiForWindow != NULL )
     {
       result = fnGetDpiForWindow( window );
