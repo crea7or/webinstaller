@@ -300,7 +300,8 @@ void MainDialog::SetMode( bool _mode )
 
     if ( timerHandle == NULL )
     {
-      timerHandle = SetTimer( dialogHandle, ( UINT_PTR ) dialogHandle, 1, NULL );
+      // ~60 fps marquee, 1 ms was clamped by the system anyway and repainted as fast as timer resolution allowed
+      timerHandle = SetTimer( dialogHandle, ( UINT_PTR ) dialogHandle, 16, NULL );
     }
   }
 
