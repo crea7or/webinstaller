@@ -26,5 +26,15 @@ protected:
   LONG step;
   // slices in marque mode
   DWORD slices;
+
+  // paint objects cached between frames
+  void DestroyPaintCache();
+  HDC memoryDc;
+  HBITMAP memoryBitmap;
+  HBITMAP previousMemoryBitmap;
+  LONG memoryWidth;
+  LONG memoryHeight;
+  HBRUSH barBrush;
+  COLORREF barBrushColor;
 };
 

@@ -11,10 +11,39 @@ ProgressControl::ProgressControl()
   currentPosition = 0;
   step = 0;
   slices = 2;
+
+  memoryDc = NULL;
+  memoryBitmap = NULL;
+  previousMemoryBitmap = NULL;
+  memoryWidth = 0;
+  memoryHeight = 0;
+  barBrush = NULL;
+  barBrushColor = 0;
 }
 
 ProgressControl::~ProgressControl()
-{}
+{
+  DestroyPaintCache();
+  if ( barBrush != NULL )
+  {
+    DeleteObject( barBrush );
+  }
+}
+
+void ProgressControl::DestroyPaintCache()
+{
+  if ( memoryDc != NULL )
+  {
+    SelectObject( memoryDc, previousMemoryBitmap );
+    DeleteObject( memoryBitmap );
+    DeleteDC( memoryDc );
+  }
+  memoryDc = NULL;
+  memoryBitmap = NULL;
+  previousMemoryBitmap = NULL;
+  memoryWidth = 0;
+  memoryHeight = 0;
+}
 
 LRESULT ProgressControl::OnPaint()
 {
@@ -28,12 +57,29 @@ LRESULT ProgressControl::OnPaint()
 
   if ( windowRectangle.Width() > 0 )
   {
-    HDC memoryDc = CreateCompatibleDC( ps.hdc );
-    HBITMAP memeoryBitmap = CreateCompatibleBitmap( ps.hdc, windowRectangle.Width(), windowRectangle.Height());
-    SelectObject( memoryDc, memeoryBitmap );
+    // recreate back buffer only when size changes
+    if ( memoryDc == NULL || memoryWidth != windowRectangle.Width() || memoryHeight != windowRectangle.Height())
+    {
+      DestroyPaintCache();
+      memoryDc = CreateCompatibleDC( ps.hdc );
+      memoryBitmap = CreateCompatibleBitmap( ps.hdc, windowRectangle.Width(), windowRectangle.Height());
+      previousMemoryBitmap = ( HBITMAP ) SelectObject( memoryDc, memoryBitmap );
+      memoryWidth = windowRectangle.Width();
+      memoryHeight = windowRectangle.Height();
+    }
 
-    HBRUSH barBrush = CreateSolidBrush( foregroundColor );
-    HBRUSH backgroundBrush = CreateSolidBrush( backgroundColor );
+    // recreate bar brush only when color changes
+    if ( barBrush == NULL || barBrushColor != foregroundColor )
+    {
+      if ( barBrush != NULL )
+      {
+        DeleteObject( barBrush );
+      }
+      barBrush = CreateSolidBrush( foregroundColor );
+      barBrushColor = foregroundColor;
+    }
+    // kept in sync with backgroundColor by BaseControl
+    HBRUSH backgroundBrush = windowBackgroundBrush;
 
     if ( totalPosition > 0 )
     {
@@ -119,13 +165,6 @@ LRESULT ProgressControl::OnPaint()
     }
 
     BitBlt( ps.hdc, 0, 0, windowRectangle.Width(), windowRectangle.Height(), memoryDc, 0, 0, SRCCOPY );
-
-    DeleteObject( barBrush );
-    DeleteObject( backgroundBrush );
-
-    DeleteDC( memoryDc );
-    DeleteObject( memeoryBitmap );
-
   }
   EndPaint( windowHandle, &ps );
   return 0;
