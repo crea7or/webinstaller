@@ -89,19 +89,21 @@ DWORD WINAPI InstallerManager::InstallerRunThread( LPVOID )
 {
   InstallerManager& manager = InstallerManager::Get();
   HWND window = manager.GetActiveWindow();
+  if ( window == NULL )
+  {
+    return 0;
+  }
   std::wstring infoText( L"Downloading..." );
   SendMessage( window, SET_PROGRESS_TEXT, 0, ( LPARAM ) infoText.c_str());
 
   for ( uint32_t download = 0; download < 50; ++download )
   {
-    if ( window != NULL )
-    {
-      PostMessage( window, SET_PROGRESS_BAR, ( WPARAM ) 50, ( LPARAM ) download );
-    }
     if ( WaitForSingleObject( manager.cancelEvent, 100 ) == WAIT_OBJECT_0 )
     {
       return 0;
     }
+    // report completed steps, so the bar reaches 50 of 50
+    PostMessage( window, SET_PROGRESS_BAR, ( WPARAM ) 50, ( LPARAM ) download + 1 );
   }
 
   infoText = L"Unpacking and launching...";
