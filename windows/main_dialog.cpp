@@ -324,6 +324,48 @@ LRESULT MainDialog::OnEraseBackground( WPARAM wParam, LPARAM lParam )
   return ( LRESULT ) TRUE;
 }
 
+LRESULT MainDialog::OnDpiChange( WPARAM wParam, LPARAM lParam )
+{
+  // remember blurred background size before window is resized
+  WindowsUtils::RectHolder oldRect;
+  GetClientRect( dialogHandle, &oldRect );
+
+  LRESULT result = BaseDialog::OnDpiChange( wParam, lParam );
+
+  // stretch blurred background to the new client size
+  WindowsUtils::RectHolder newRect;
+  GetClientRect( dialogHandle, &newRect );
+  if ( hdcMemDC != NULL && hbmBackground != NULL && ( newRect.Width() != oldRect.Width() || newRect.Height() != oldRect.Height()))
+  {
+    HBITMAP hbmScaled = CreateCompatibleBitmap( hdcMemDC, newRect.Width(), newRect.Height());
+    HDC hdcScaled = CreateCompatibleDC( hdcMemDC );
+    if ( hbmScaled != NULL && hdcScaled != NULL )
+    {
+      HBITMAP hbmScaledOld = ( HBITMAP ) SelectObject( hdcScaled, hbmScaled );
+      int previousMode = SetStretchBltMode( hdcScaled, HALFTONE );
+      StretchBlt( hdcScaled, 0, 0, newRect.Width(), newRect.Height(), hdcMemDC, 0, 0, oldRect.Width(), oldRect.Height(), SRCCOPY );
+      SetStretchBltMode( hdcScaled, previousMode );
+      SelectObject( hdcScaled, hbmScaledOld );
+
+      // replace background bitmap
+      SelectObject( hdcMemDC, hbmScaled );
+      DeleteObject( hbmBackground );
+      hbmBackground = hbmScaled;
+      hbmScaled = NULL;
+      RedrawDialog( true );
+    }
+    if ( hdcScaled != NULL )
+    {
+      DeleteDC( hdcScaled );
+    }
+    if ( hbmScaled != NULL )
+    {
+      DeleteObject( hbmScaled );
+    }
+  }
+  return result;
+}
+
 LRESULT MainDialog::OnTimer( WPARAM, LPARAM )
 {
   if ( mode )

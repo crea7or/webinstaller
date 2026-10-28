@@ -24,6 +24,7 @@ public:
   virtual LRESULT OnTimer( WPARAM, LPARAM lParam ) override;
   virtual LRESULT OnClose() override;
   virtual LRESULT OnEraseBackground( WPARAM wParam, LPARAM lParam ) override;
+  virtual LRESULT OnDpiChange( WPARAM wParam, LPARAM lParam ) override;
 
 protected:
 
