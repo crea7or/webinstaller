@@ -91,6 +91,8 @@ protected:
 
   // default font
   HFONT textFont;
+  // false if textFont was set by WM_SETFONT and belongs to the sender
+  bool textFontOwned;
 
   // windows text that will be captured on Attach
   std::wstring windowText;

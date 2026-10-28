@@ -15,6 +15,7 @@ BaseControl::BaseControl()
   windowBackgroundBrush = CreateSolidBrush( backgroundColor );
   prevoiusWndProc = NULL;
   textFont = NULL;
+  textFontOwned = true;
   windowHandle = NULL;
 
   LOGFONT textLogFont;
@@ -33,21 +34,28 @@ void BaseControl::SetFont( LOGFONT* fontStruct )
 {
   DestroyFont();
   textFont = CreateFontIndirect( fontStruct );
+  textFontOwned = true;
 }
 
 void BaseControl::SetFont( HFONT fontHandle)
 {
   DestroyFont();
+  // font is owned by the WM_SETFONT sender
   textFont = fontHandle;
+  textFontOwned = false;
 }
 
 void BaseControl::DestroyFont()
 {
   if ( textFont != NULL )
   {
-    DeleteObject( textFont );
+    if ( textFontOwned )
+    {
+      DeleteObject( textFont );
+    }
     textFont = NULL;
   }
+  textFontOwned = true;
 }
 
 LRESULT CALLBACK BaseControl::ControlProc( HWND window, UINT message, WPARAM wParam, LPARAM lParam )
@@ -74,7 +82,7 @@ LRESULT CALLBACK BaseControl::ControlProc( HWND window, UINT message, WPARAM wPa
           controlPtr->SetFont(( HFONT )wParam );
           if ( LOWORD( lParam ) > 0 )
           {
-            result = controlPtr->OnPaint();
+            controlPtr->RedrawControl();
           }
         }
         break;
