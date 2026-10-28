@@ -262,9 +262,17 @@ namespace WindowsUtils
     {
       itemTemplate += sizeof( WORD );
     }
-    else
+    else if ((( WORD* ) itemTemplate )[ 0 ] == 0xFFFF )
     {
       itemTemplate += sizeof( WORD ) * 2;
+    }
+    else
+    {
+      // menu name string
+      size_t stringSize = wcslen(( WCHAR* ) itemTemplate );
+      // NULL termination char
+      ++stringSize;
+      itemTemplate += stringSize * sizeof( WCHAR );
     }
 
     // windowClass
@@ -371,14 +379,8 @@ namespace WindowsUtils
       nextItemTemplate += stringSize * sizeof( WCHAR );
     }
 
-    if ((( WORD* ) nextItemTemplate )[ 0 ] == 0 )
-    {
-      nextItemTemplate += sizeof( WORD );
-    }
-    else
-    {
-      nextItemTemplate += (( WORD* ) nextItemTemplate )[ 0 ];
-    }
+    // extraCount WORD followed by extraCount bytes of creation data
+    nextItemTemplate += sizeof( WORD ) + (( WORD* ) nextItemTemplate )[ 0 ];
 
     // next DLGITEMTEMPLATEEX structure begins on the first DWORD boundary after this
     size_t align = ( size_t ) nextItemTemplate & ( sizeof( DWORD ) - 1 );
