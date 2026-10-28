@@ -15,11 +15,33 @@ StaticControl::StaticControl()
   backgroundContext = NULL;
   oldBackgroundBitmap = NULL;
   // in memory background copy
+
+  paintContext = NULL;
+  paintBitmap = NULL;
+  paintOldBitmap = NULL;
+  paintWidth = 0;
+  paintHeight = 0;
 }
 
 StaticControl::~StaticControl()
 {
   DestroyBackground();
+  DestroyPaintBuffer();
+}
+
+void StaticControl::DestroyPaintBuffer()
+{
+  if ( paintContext != NULL )
+  {
+    SelectObject( paintContext, paintOldBitmap );
+    DeleteObject( paintBitmap );
+    DeleteDC( paintContext );
+  }
+  paintContext = NULL;
+  paintBitmap = NULL;
+  paintOldBitmap = NULL;
+  paintWidth = 0;
+  paintHeight = 0;
 }
 
 void StaticControl::DestroyBackground()
@@ -91,10 +113,20 @@ void StaticControl::Prepaint( PAINTSTRUCTEX& psEx )
   BeginPaint( windowHandle, &psEx );
   GetClientRect( windowHandle, &psEx.windowRectangle );
 
-  // memory bitmap
-  psEx.memoryContext = CreateCompatibleDC( psEx.hdc );
-  psEx.memoryBitmap = CreateCompatibleBitmap( psEx.hdc, psEx.windowRectangle.right - psEx.windowRectangle.left, psEx.windowRectangle.bottom - psEx.windowRectangle.top );
-  psEx.previousMemoryBitmap = ( HBITMAP )SelectObject( psEx.memoryContext, psEx.memoryBitmap );
+  // memory bitmap, recreated only when size changes
+  if ( paintContext == NULL || paintWidth != psEx.windowRectangle.Width() || paintHeight != psEx.windowRectangle.Height())
+  {
+    DestroyPaintBuffer();
+    paintContext = CreateCompatibleDC( psEx.hdc );
+    paintBitmap = CreateCompatibleBitmap( psEx.hdc, psEx.windowRectangle.Width(), psEx.windowRectangle.Height());
+    paintOldBitmap = ( HBITMAP )SelectObject( paintContext, paintBitmap );
+    paintWidth = psEx.windowRectangle.Width();
+    paintHeight = psEx.windowRectangle.Height();
+  }
+  psEx.memoryContext = paintContext;
+  psEx.memoryBitmap = paintBitmap;
+  psEx.previousMemoryBitmap = NULL;
+  psEx.previousFont = NULL;
   // memory bitmap
 
   // memory background bitmap
@@ -127,12 +159,14 @@ LRESULT StaticControl::OnPaint()
 void StaticControl::Postpaint( PAINTSTRUCTEX& paintStruct )
 {
   // memory bitmap copy
-  BitBlt( paintStruct.hdc, 0, 0, paintStruct.windowRectangle.right - paintStruct.windowRectangle.left, paintStruct.windowRectangle.bottom - paintStruct.windowRectangle.top, paintStruct.memoryContext, 0, 0, SRCCOPY );
-  // do not reorder copying and cleanup
-  SelectObject( paintStruct.memoryContext, paintStruct.previousMemoryBitmap );
+  BitBlt( paintStruct.hdc, 0, 0, paintWidth, paintHeight, paintStruct.memoryContext, 0, 0, SRCCOPY );
+  // memory context is reused, restore its state
+  // font must be deselected, so it can be deleted on font change
+  if ( paintStruct.previousFont != NULL )
+  {
+    SelectObject( paintStruct.memoryContext, paintStruct.previousFont );
+  }
   SetBkMode( paintStruct.memoryContext, paintStruct.previousBkMode );
-  DeleteObject( paintStruct.memoryBitmap );
-  DeleteDC( paintStruct.memoryContext );
   // memory bitmap copy
 
   EndPaint( windowHandle, &paintStruct );

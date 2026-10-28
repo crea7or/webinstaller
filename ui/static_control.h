@@ -61,6 +61,7 @@ protected:
   void Prepaint( PAINTSTRUCTEX& paintStruct );
   void Postpaint( PAINTSTRUCTEX& paintStruct );
   void DestroyBackground();
+  void DestroyPaintBuffer();
 
   virtual void SetState( STATE newState )
   {
@@ -77,4 +78,11 @@ protected:
   HBITMAP oldBackgroundBitmap;
   HDC backgroundContext;
   // in memory background copy
+
+  // back buffer reused between paints
+  HDC paintContext;
+  HBITMAP paintBitmap;
+  HBITMAP paintOldBitmap;
+  LONG paintWidth;
+  LONG paintHeight;
 };
