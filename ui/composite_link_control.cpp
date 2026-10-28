@@ -11,6 +11,9 @@ CompositeLinkControl::CompositeLinkControl()
   textUnderlinedFont = NULL;
   drawRectangleOffset = 0;
   activePiece = -1;
+  piecesMeasured = false;
+  measuredFont = NULL;
+  piecesWidth = 0;
 }
 
 CompositeLinkControl::~CompositeLinkControl()
@@ -52,6 +55,8 @@ void CompositeLinkControl::SetFont( LOGFONT* fontStruct )
   textFont = NULL;
   fontStruct->lfUnderline = FALSE;
   BaseControl::SetFont( fontStruct );
+
+  piecesMeasured = false;
 }
 
 LRESULT CompositeLinkControl::OnPaint()
@@ -66,24 +71,31 @@ LRESULT CompositeLinkControl::OnPaint()
     // should be set before text size measurement
     psEx.previousFont = (HFONT) SelectObject( psEx.memoryContext, textFont );
 
-    LONG totalWidth = CalculateCheckboxSize( psEx.memoryContext );
     LONG windowWidth = psEx.windowRectangle.right - psEx.windowRectangle.left;
 
-    // calculate text sizes
-    RECT textRect = { 0 };
-    for ( std::vector< TextPiece >::iterator it = pieces.begin(); it != pieces.end(); ++it )
+    // calculate text sizes only after font or text change
+    if ( !piecesMeasured || measuredFont != textFont )
     {
-      if ( DrawText( psEx.memoryContext, it->text.c_str(), -1, &textRect, DT_CALCRECT ) > 0 )
+      piecesWidth = CalculateCheckboxSize( psEx.memoryContext );
+      RECT textRect = { 0 };
+      for ( TextPiece& piece : pieces )
       {
-        it->size.cx = textRect.right - textRect.left;
+        if ( DrawText( psEx.memoryContext, piece.text.c_str(), -1, &textRect, DT_CALCRECT ) > 0 )
+        {
+          piece.size.cx = textRect.right - textRect.left;
+          piece.size.cy = textRect.bottom - textRect.top;
+        }
+        else
+        {
+          piece.size.cx = 0;
+          piece.size.cy = 0;
+        }
+        piecesWidth += piece.size.cx;
       }
-      else
-      {
-        it->size.cx = 0;
-        it->size.cy = 0;
-      }
-      totalWidth += it->size.cx;
+      piecesMeasured = true;
+      measuredFont = textFont;
     }
+    LONG totalWidth = piecesWidth;
 
     // aligning options
     // multiline text is not supported yet
@@ -121,7 +133,7 @@ LRESULT CompositeLinkControl::OnPaint()
     DrawCheckbox( psEx.memoryContext, drawRectangle, outerStyle );
 
     // paint pieces separately
-    for ( const TextPiece tp : pieces )
+    for ( const TextPiece& tp : pieces )
     {
       if ( tp.size.cx > 0 )
       {

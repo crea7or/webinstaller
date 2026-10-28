@@ -34,6 +34,7 @@ public:
   void AddPiece( const std::wstring& _text, const UINT _message = MAXDWORD )
   {
     pieces.push_back( TextPiece( _text, _message ));
+    piecesMeasured = false;
   }
 
   virtual LRESULT OnPaint() override;
@@ -66,5 +67,11 @@ protected:
   // font with underline style
   HFONT textUnderlinedFont;
 
+  // pieces and checkbox sizes are measured once per font/text change
+  bool piecesMeasured;
+  // font used for the last measurement (font may also come from WM_SETFONT)
+  HFONT measuredFont;
+  // checkbox plus all pieces width
+  LONG piecesWidth;
 };
 
