@@ -188,12 +188,16 @@ LRESULT CompositeLinkControl::OnMouseMove( WPARAM, LPARAM lParam )
   }
   else
   {
-    if ( previousCursor == NULL && currentState != STATE::CLICK && overPiece != activePiece )
+    if ( currentState != STATE::CLICK && overPiece != activePiece )
     {
-      mouseEvent.cbSize = sizeof( TRACKMOUSEEVENT );
-      mouseEvent.dwFlags = TME_LEAVE;
-      mouseEvent.hwndTrack = windowHandle;
-      TrackMouseEvent( &mouseEvent );
+      if ( previousCursor == NULL )
+      {
+        mouseEvent.cbSize = sizeof( TRACKMOUSEEVENT );
+        mouseEvent.dwFlags = TME_LEAVE;
+        mouseEvent.hwndTrack = windowHandle;
+        TrackMouseEvent( &mouseEvent );
+      }
+      // also moves highlight from one link piece to another
       SetState( STATE::HOVER, overPiece );
     }
   }
