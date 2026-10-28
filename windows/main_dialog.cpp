@@ -39,7 +39,7 @@ MainDialog::~MainDialog()
   }
   if ( hdcMemDC != NULL )
   {
-    DeleteObject( hdcMemDC );
+    DeleteDC( hdcMemDC );
   }
   // mainIcon is shared (LoadIcon) and must not be destroyed
   RemoveCheckboxes();
@@ -283,7 +283,7 @@ void MainDialog::SetMode( bool _mode )
         else
         {
           // in case of error with HBITMAP
-          DeleteObject( hdcMemDC );
+          DeleteDC( hdcMemDC );
           hdcMemDC = NULL;
         }
       }
