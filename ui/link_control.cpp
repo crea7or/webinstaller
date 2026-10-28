@@ -56,7 +56,6 @@ void LinkControl::SetState( STATE newState )
         {
           SetCursor( previousCursor );
           previousCursor = NULL;
-          ShowCursor( TRUE );
         }
         break;
       }
