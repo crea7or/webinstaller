@@ -51,7 +51,9 @@ LRESULT MainDialog::OnInitDialog( HWND initDialogHandle )
 
   // window params
   SetWindowText( dialogHandle, Installer::eMsgWindowTitle );
-  SetClassLong( dialogHandle, GCL_HICON, ( LPARAM ) mainIcon );
+  // per window icon, SetClassLong would change the shared dialog class
+  SendMessage( dialogHandle, WM_SETICON, ICON_BIG, ( LPARAM ) mainIcon );
+  SendMessage( dialogHandle, WM_SETICON, ICON_SMALL, ( LPARAM ) mainIcon );
 
   // app description
   descriptionControl.SetForegroundColor( Installer::mainTextColor );
