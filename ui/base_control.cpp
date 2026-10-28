@@ -167,13 +167,11 @@ std::wstring BaseControl::GetText()
   int textSize = GetWindowTextLength( windowHandle );
   if ( textSize > 0 )
   {
-    ++textSize; // because \0 is not included
-    text.assign( textSize, ( wchar_t ) 0 );
-    textSize = GetWindowText( windowHandle, const_cast< wchar_t* >( text.c_str()), textSize );
-  }
-  if ( textSize == 0 )
-  {
-    text.clear();
+    // + 1 because \0 is not included
+    text.assign( textSize + 1, ( wchar_t ) 0 );
+    textSize = GetWindowText( windowHandle, &text[ 0 ], textSize + 1 );
+    // drop terminating \0 and any unused space
+    text.resize( textSize > 0 ? textSize : 0 );
   }
   return text;
 }
