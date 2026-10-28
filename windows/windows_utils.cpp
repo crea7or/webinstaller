@@ -116,8 +116,8 @@ namespace WindowsUtils
     DWORD* dstBuffer = destinationBuffer;
     DWORD* tmpBuffer;
 
-    DWORD c2, c3, c4, c5;
-    DWORD r, g, b;
+    DWORD center, up, right, down, left;
+    DWORD redBlueSum, greenSum;
     DWORD pixelIndex;
 
     for ( DWORD steps = 0; steps < passes; ++steps )
@@ -128,25 +128,18 @@ namespace WindowsUtils
         pixelIndex = ( i * width ) + 1;
         for ( DWORD j = 1; j < ( width - 1 ); ++j )
         {
-          c2 = GetBValue( srcBuffer[ pixelIndex - width ] );
-          c3 = GetBValue( srcBuffer[ pixelIndex + 1 ] );
-          c4 = GetBValue( srcBuffer[ pixelIndex + width ] );
-          c5 = GetBValue( srcBuffer[ pixelIndex - 1 ] );
-          r = ( GetBValue( srcBuffer[ pixelIndex ] ) + c2 + c3 + c4 + c5 ) / 5;
+          // read each pixel once
+          center = srcBuffer[ pixelIndex ];
+          up = srcBuffer[ pixelIndex - width ];
+          right = srcBuffer[ pixelIndex + 1 ];
+          down = srcBuffer[ pixelIndex + width ];
+          left = srcBuffer[ pixelIndex - 1 ];
 
-          c2 = GetGValue( srcBuffer[ pixelIndex - width ] );
-          c3 = GetGValue( srcBuffer[ pixelIndex + 1 ] );
-          c4 = GetGValue( srcBuffer[ pixelIndex + width ] );
-          c5 = GetGValue( srcBuffer[ pixelIndex - 1 ] );
-          g = ( GetGValue( srcBuffer[ pixelIndex ] ) + c2 + c3 + c4 + c5 ) / 5;
+          // sum two outer channels at once, 5 * 255 fits in 11 bits so channels do not overlap
+          redBlueSum = ( center & 0x00FF00FF ) + ( up & 0x00FF00FF ) + ( right & 0x00FF00FF ) + ( down & 0x00FF00FF ) + ( left & 0x00FF00FF );
+          greenSum = ( center & 0x0000FF00 ) + ( up & 0x0000FF00 ) + ( right & 0x0000FF00 ) + ( down & 0x0000FF00 ) + ( left & 0x0000FF00 );
 
-          c2 = GetRValue( srcBuffer[ pixelIndex - width ] );
-          c3 = GetRValue( srcBuffer[ pixelIndex + 1 ] );
-          c4 = GetRValue( srcBuffer[ pixelIndex + width ] );
-          c5 = GetRValue( srcBuffer[ pixelIndex - 1 ] );
-          b = ( GetRValue( srcBuffer[ pixelIndex ] ) + c2 + c3 + c4 + c5 ) / 5;
-          // store in reverse order
-          dstBuffer[ pixelIndex++ ] = RGB( b, g, r );
+          dstBuffer[ pixelIndex++ ] = (( redBlueSum & 0x7FF ) / 5 ) | ((( greenSum >> 8 ) / 5 ) << 8 ) | ((( redBlueSum >> 16 ) / 5 ) << 16 );
         }
       }
       tmpBuffer = srcBuffer;
