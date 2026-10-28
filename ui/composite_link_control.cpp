@@ -228,9 +228,16 @@ void CompositeLinkControl::SetState( STATE newState, int overPiece )
 
     activePiece = overPiece;
 
-    // something changed?
     // use original procedure to set the state
+    // it redraws only when the state itself changes
+    bool stateChanged = newState != currentState;
     LinkControl::SetState( newState );
+
+    // piece highlighting changed without state change
+    if ( redraw && !stateChanged )
+    {
+      RedrawControl();
+    }
   }
 }
 
