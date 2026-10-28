@@ -32,7 +32,7 @@ class AbstractDialog
 {
 public:
   AbstractDialog( HINSTANCE _instanceHandle, UINT _templateId, HWND _parentHandle = NULL ) :
-    instanceHandle( _instanceHandle ), templateId( _templateId ), parentHandle( _parentHandle ), currentDpi( 96 )
+    dialogHandle( NULL ), instanceHandle( _instanceHandle ), templateId( _templateId ), parentHandle( _parentHandle ), currentDpi( 96 )
   {}
 
   virtual ~AbstractDialog()
