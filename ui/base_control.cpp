@@ -181,7 +181,7 @@ bool BaseControl::Attach( const HWND window )
     return false;
   }
   windowHandle = window;
-  prevoiusWndProc = ( WNDPROC )SetWindowLongPtr( window, GWLP_WNDPROC, ( LONG )BaseControl::ControlProc );
+  prevoiusWndProc = ( WNDPROC )SetWindowLongPtr( window, GWLP_WNDPROC, ( LONG_PTR )BaseControl::ControlProc );
   SetWindowLongPtr( window, GWLP_USERDATA, ( LONG_PTR )this );
   windowText = GetText();
   return TRUE;
@@ -193,8 +193,8 @@ bool BaseControl::Detach()
   {
     return false;
   }
-  SetWindowLongPtr( windowHandle, GWLP_WNDPROC, ( LONG )prevoiusWndProc );
-  SetWindowLongPtr( windowHandle, GWLP_USERDATA, ( LONG )NULL );
+  SetWindowLongPtr( windowHandle, GWLP_WNDPROC, ( LONG_PTR )prevoiusWndProc );
+  SetWindowLongPtr( windowHandle, GWLP_USERDATA, ( LONG_PTR )NULL );
   prevoiusWndProc = NULL;
   windowHandle = NULL;
   return TRUE;
