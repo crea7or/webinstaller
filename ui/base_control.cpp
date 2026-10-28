@@ -19,10 +19,7 @@ BaseControl::BaseControl()
   textFont = NULL;
   textFontOwned = true;
   windowHandle = NULL;
-
-  LOGFONT textLogFont;
-  WindowsUtils::FillLogFont( textLogFont, 10 );
-  SetFont( &textLogFont );
+  // no default font, dialogs set fonts for their controls in LoadFonts
 }
 
 BaseControl::~BaseControl()
