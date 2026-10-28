@@ -7,6 +7,8 @@
 #include "installer/installer_constants.h"
 #include "windows/windows_utils.h"
 
+#include <windowsx.h>
+
 BaseControl::BaseControl()
 {
   foregroundColor = GetSysColor( COLOR_WINDOWTEXT );
@@ -95,9 +97,16 @@ LRESULT CALLBACK BaseControl::ControlProc( HWND window, UINT message, WPARAM wPa
         result = controlPtr->OnMouseHover( wParam, lParam );
         break;
       case WM_MOUSEMOVE:
-      case WM_NCMOUSEMOVE:
         result = controlPtr->OnMouseMove( wParam, lParam );
         break;
+      case WM_NCMOUSEMOVE:
+      {
+        // non-client coordinates are in screen space
+        POINT point = { GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) };
+        ScreenToClient( window, &point );
+        result = controlPtr->OnMouseMove( wParam, MAKELPARAM( point.x, point.y ));
+        break;
+      }
       case WM_MOUSELEAVE:
       case WM_NCMOUSELEAVE:
         result = controlPtr->OnMouseLeave();
