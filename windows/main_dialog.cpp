@@ -256,6 +256,8 @@ void MainDialog::SetMode( bool _mode )
     {
       // temporary hide it
       closeLinkControl.Show( false );
+      // repaint now, otherwise hidden controls are still on screen and get captured
+      RedrawWindow( dialogHandle, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN );
       HDC hdcWindow = GetDC( dialogHandle );
       hdcMemDC = CreateCompatibleDC( hdcWindow );
       if ( hdcMemDC != NULL )
