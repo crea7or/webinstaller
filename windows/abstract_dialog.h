@@ -276,6 +276,11 @@ public:
 
   void DestroyDialog( bool quit = false )
   {
+    // may be called twice, e.g. setup completes while cancel prompt is shown
+    if ( dialogHandle == NULL )
+    {
+      return;
+    }
     SetWindowLongPtr( dialogHandle, GWLP_USERDATA, ( LONG_PTR )NULL );
     DestroyWindow( dialogHandle );
     dialogHandle = NULL;
