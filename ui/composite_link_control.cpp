@@ -160,9 +160,10 @@ int CompositeLinkControl::GetPieceByPosition( int xPosition ) const
   LONG offsetFromStart = drawRectangleOffset + CheckboxSize();
   for ( size_t index = 0; index < pieces.size(); ++index )
   {
-    if ( xPosition > offsetFromStart && xPosition < ( offsetFromStart + pieces[ index ].size.cx ))
+    // half-open range, so there are no gaps between pieces
+    if ( xPosition >= offsetFromStart && xPosition < ( offsetFromStart + pieces[ index ].size.cx ))
     {
-      return index;
+      return ( int ) index;
     }
     offsetFromStart += pieces[ index ].size.cx;
   }
