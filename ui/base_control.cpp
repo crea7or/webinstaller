@@ -68,8 +68,13 @@ LRESULT CALLBACK BaseControl::ControlProc( HWND window, UINT message, WPARAM wPa
     {
       case WM_DESTROY:
       case WM_CLOSE:
+      {
+        // detach and let the original procedure handle the message too
+        WNDPROC originalProc = controlPtr->prevoiusWndProc;
         controlPtr->Detach();
+        result = originalProc != NULL ? CallWindowProc( originalProc, window, message, wParam, lParam ) : DefWindowProc( window, message, wParam, lParam );
         break;
+      }
       case WM_ERASEBKGND:
         result = controlPtr->OnEraseBackground(( HDC )wParam );
         break;
