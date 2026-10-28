@@ -52,14 +52,17 @@ public:
 
 private:
 
+  // members are written by the UI thread only,
+  // activeWindow is set before the install thread starts
+
   // active window handle
-  volatile HWND activeWindow;
+  HWND activeWindow;
 
   // installer font
-  volatile HANDLE installerFont;
+  HANDLE installerFont;
 
   // install thread handle
-  volatile HANDLE installerRunThreadHandle;
+  HANDLE installerRunThreadHandle;
 
   // signaled when install should be cancelled
   HANDLE cancelEvent;
