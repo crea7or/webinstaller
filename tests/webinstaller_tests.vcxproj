@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{29F31927-5893-44AD-90AE-3B00A0436D25}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>webinstaller_tests</RootNamespace>
+    <WindowsTargetPlatformVersion>6.0</WindowsTargetPlatformVersion>
+    <ProjectName>webinstaller_tests</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <IntDir>$(MSBuildThisFileDirectory)..\x86\$(Configuration)\$(ProjectName)\obj\</IntDir>
+    <OutDir>$(MSBuildThisFileDirectory)..\x86\$(Configuration)\$(ProjectName)\</OutDir>
+    <LinkIncremental>false</LinkIncremental>
+    <!-- installer manifest is embedded by install.rc -->
+    <EmbedManifest>false</EmbedManifest>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="test_framework.h" />
+    <ClInclude Include="test_window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- tests -->
+    <ClCompile Include="test_main.cpp" />
+    <ClCompile Include="windows_utils_tests.cpp" />
+    <ClCompile Include="installer_manager_tests.cpp" />
+    <ClCompile Include="controls_tests.cpp" />
+    <ClCompile Include="dialog_tests.cpp" />
+    <!-- installer sources under test, install.cpp is left out because it has wWinMain -->
+    <ClCompile Include="..\installer\installer_manager.cpp" />
+    <ClCompile Include="..\installer\system_utils.cpp" />
+    <ClCompile Include="..\ui\base_control.cpp" />
+    <ClCompile Include="..\ui\composite_checkbox_control.cpp" />
+    <ClCompile Include="..\ui\composite_link_control.cpp" />
+    <ClCompile Include="..\ui\layered_static_control.cpp" />
+    <ClCompile Include="..\ui\link_control.cpp" />
+    <ClCompile Include="..\ui\option_checkbox_control.cpp" />
+    <ClCompile Include="..\ui\progress_control.cpp" />
+    <ClCompile Include="..\ui\rect_button_control.cpp" />
+    <ClCompile Include="..\ui\static_control.cpp" />
+    <ClCompile Include="..\windows\base_dialog.cpp" />
+    <ClCompile Include="..\windows\main_dialog.cpp" />
+    <ClCompile Include="..\windows\windows_utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- dialog template, font and manifest are the same as in the installer -->
+    <ResourceCompile Include="..\installer\install.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
