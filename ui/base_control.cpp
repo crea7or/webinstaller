@@ -181,8 +181,10 @@ bool BaseControl::Attach( const HWND window )
     return false;
   }
   windowHandle = window;
-  prevoiusWndProc = ( WNDPROC )SetWindowLongPtr( window, GWLP_WNDPROC, ( LONG_PTR )BaseControl::ControlProc );
+  // set user data first, so ControlProc always finds the control and previous procedure
+  prevoiusWndProc = ( WNDPROC )GetWindowLongPtr( window, GWLP_WNDPROC );
   SetWindowLongPtr( window, GWLP_USERDATA, ( LONG_PTR )this );
+  SetWindowLongPtr( window, GWLP_WNDPROC, ( LONG_PTR )BaseControl::ControlProc );
   windowText = GetText();
   return TRUE;
 }
