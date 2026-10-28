@@ -15,6 +15,7 @@ InstallerManager::InstallerManager()
   activeWindow = NULL;
   installerFont = NULL;
   installerRunThreadHandle = NULL;
+  cancelEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
 
   // add some options
   // options controlId should be greater than max ID of any control ID in resources.h
@@ -25,10 +26,15 @@ InstallerManager::InstallerManager()
 
 InstallerManager::~InstallerManager()
 {
-  if ( InstallerRunThread != NULL )
+  if ( installerRunThreadHandle != NULL )
   {
+    InstallerCancel();
     WaitForSingleObject( installerRunThreadHandle, INFINITE );
     CloseHandle( installerRunThreadHandle );
+  }
+  if ( cancelEvent != NULL )
+  {
+    CloseHandle( cancelEvent );
   }
   if ( installerFont != NULL )
   {
@@ -70,6 +76,15 @@ void InstallerManager::InstallerStart()
   }
 }
 
+void InstallerManager::InstallerCancel()
+{
+  // do not wait here - thread may be blocked in SendMessage to the UI thread
+  if ( cancelEvent != NULL )
+  {
+    SetEvent( cancelEvent );
+  }
+}
+
 DWORD WINAPI InstallerManager::InstallerRunThread( LPVOID )
 {
   InstallerManager& manager = InstallerManager::Get();
@@ -83,7 +98,10 @@ DWORD WINAPI InstallerManager::InstallerRunThread( LPVOID )
     {
       PostMessage( window, SET_PROGRESS_BAR, ( WPARAM ) 50, ( LPARAM ) download );
     }
-    Sleep( 100 );
+    if ( WaitForSingleObject( manager.cancelEvent, 100 ) == WAIT_OBJECT_0 )
+    {
+      return 0;
+    }
   }
 
   infoText = L"Unpacking and launching...";
@@ -92,7 +110,10 @@ DWORD WINAPI InstallerManager::InstallerRunThread( LPVOID )
 
   for ( uint32_t install = 0; install < 50; ++install )
   {
-    Sleep( 100 );
+    if ( WaitForSingleObject( manager.cancelEvent, 100 ) == WAIT_OBJECT_0 )
+    {
+      return 0;
+    }
   }
 
   PostMessage( window, SETUP_COMPLETE, ( WPARAM ) 0, ( LPARAM ) 0 );

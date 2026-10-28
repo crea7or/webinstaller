@@ -33,6 +33,9 @@ public:
   // start install process (download, unpack, launch ...)
   void InstallerStart();
 
+  // ask install thread to stop
+  void InstallerCancel();
+
   HWND GetActiveWindow() const;
   void SetActiveWindow( HWND handle );
 
@@ -57,6 +60,9 @@ private:
 
   // install thread handle
   volatile HANDLE installerRunThreadHandle;
+
+  // signaled when install should be cancelled
+  HANDLE cancelEvent;
 
   InstallerManager();
   ~InstallerManager();

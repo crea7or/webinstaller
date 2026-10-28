@@ -157,6 +157,7 @@ LRESULT MainDialog::OnClose()
 {
   if ( AskToCancelInstall())
   {
+    installer.InstallerCancel();
     // avoid accidential timer processing
     mode = false;
     DestroyDialog( true );
