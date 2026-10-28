@@ -47,6 +47,10 @@ public:
   void SetBackgroundColor( const COLORREF color )
   {
     backgroundColor = color;
+    if ( windowBackgroundBrush != NULL )
+    {
+      DeleteObject( windowBackgroundBrush );
+    }
     windowBackgroundBrush = CreateSolidBrush( color );
   }
   COLORREF GetBackgroundColor() const
