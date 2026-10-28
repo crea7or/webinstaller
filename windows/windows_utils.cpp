@@ -82,8 +82,14 @@ namespace WindowsUtils
     return result;
   }
 
+  // bitmap must not be selected into any device context
   void BlurBitmap( const HDC context, const HBITMAP bitmap, const DWORD width, const DWORD height, const DWORD passes )
   {
+    // need at least one inner pixel
+    if ( width < 3 || height < 3 )
+    {
+      return;
+    }
     DWORD bitmapSizeInBytes = width * 4 * height;
     BITMAPINFO bi;
     bi.bmiHeader.biSize = sizeof( bi.bmiHeader );
@@ -97,7 +103,13 @@ namespace WindowsUtils
     bi.bmiHeader.biClrImportant = 0;
     DWORD* sourceBuffer = ( DWORD* ) malloc( bitmapSizeInBytes );
     DWORD* destinationBuffer = ( DWORD* ) malloc( bitmapSizeInBytes );
-    GetDIBits( context, bitmap, 0, height, ( LPVOID ) sourceBuffer, &bi, DIB_RGB_COLORS );
+    if ( sourceBuffer == NULL || destinationBuffer == NULL ||
+         GetDIBits( context, bitmap, 0, height, ( LPVOID ) sourceBuffer, &bi, DIB_RGB_COLORS ) == 0 )
+    {
+      free( sourceBuffer );
+      free( destinationBuffer );
+      return;
+    }
     memcpy( destinationBuffer, sourceBuffer, bitmapSizeInBytes );
 
     DWORD* srcBuffer = sourceBuffer;
@@ -110,10 +122,11 @@ namespace WindowsUtils
 
     for ( DWORD steps = 0; steps < passes; ++steps )
     {
-      for ( DWORD i = 1; i < ( height - 2 ); ++i )
+      // skip border pixels to avoid wrapping to neighbour rows
+      for ( DWORD i = 1; i < ( height - 1 ); ++i )
       {
-        pixelIndex = ( i * width );
-        for ( DWORD j = 0; j < width; ++j )
+        pixelIndex = ( i * width ) + 1;
+        for ( DWORD j = 1; j < ( width - 1 ); ++j )
         {
           c2 = GetBValue( srcBuffer[ pixelIndex - width ] );
           c3 = GetBValue( srcBuffer[ pixelIndex + 1 ] );

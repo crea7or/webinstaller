@@ -268,7 +268,10 @@ void MainDialog::SetMode( bool _mode )
           hbmOld = ( HBITMAP ) SelectObject( hdcMemDC, hbmBackground );
           if ( BitBlt( hdcMemDC, 0, 0, clientRect.right, clientRect.bottom, hdcWindow, 0, 0, SRCCOPY ))
           {
-            WindowsUtils::BlurBitmap( hdcMemDC, hbmBackground, clientRect.Width(), clientRect.Height(), 12 );
+            // GetDIBits/SetDIBits require the bitmap to be deselected
+            SelectObject( hdcMemDC, hbmOld );
+            WindowsUtils::BlurBitmap( hdcWindow, hbmBackground, clientRect.Width(), clientRect.Height(), 12 );
+            SelectObject( hdcMemDC, hbmBackground );
             BitBlt( hdcWindow, 0, 0, clientRect.right, clientRect.bottom, hdcMemDC, 0, 0, SRCCOPY );
             mainLicense.Show( false );
             descriptionControl.Show( false );
