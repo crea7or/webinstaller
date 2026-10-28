@@ -41,7 +41,7 @@ MainDialog::~MainDialog()
   {
     DeleteObject( hdcMemDC );
   }
-  DestroyIcon( mainIcon );
+  // mainIcon is shared (LoadIcon) and must not be destroyed
   RemoveCheckboxes();
 }
 

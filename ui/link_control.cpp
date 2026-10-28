@@ -13,7 +13,7 @@ LinkControl::LinkControl()
 
 LinkControl::~LinkControl()
 {
-  DestroyCursor( linkCursor );
+  // linkCursor is shared (LoadCursor) and must not be destroyed
   DestroyBackground();
 }
 
