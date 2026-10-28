@@ -11,7 +11,20 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE, LPWSTR, int )
   HANDLE systemWideMutex = CreateMutex( NULL, FALSE, Installer::eMsgWindowTitle );
   if (( systemWideMutex == NULL ) || ( GetLastError() == ERROR_ALREADY_EXISTS ))
   {
-    // already launched - exit
+    // already launched - activate existing window and exit
+    HWND existingWindow = FindWindow( WC_DIALOG, Installer::eMsgWindowTitle );
+    if ( existingWindow != NULL )
+    {
+      if ( IsIconic( existingWindow ))
+      {
+        ShowWindow( existingWindow, SW_RESTORE );
+      }
+      SetForegroundWindow( existingWindow );
+    }
+    if ( systemWideMutex != NULL )
+    {
+      CloseHandle( systemWideMutex );
+    }
     return 0;
   }
 
